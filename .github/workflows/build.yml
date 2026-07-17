@@ -13,6 +13,9 @@ jobs:
     steps:
     - name: Kodu Klonla
       uses: actions/checkout@v4
+      with:
+        # Kodları nokta içermeyen temiz bir klasöre indiriyoruz
+        path: 'proje_kodlari'
 
     - name: Python Kurulumu
       uses: actions/setup-python@v5
@@ -20,11 +23,15 @@ jobs:
         python-version: '3.10'
 
     - name: Bağımlılıkları Yükle
+      # Kodlar 'proje_kodlari' içine indiği için terminali o klasöre yönlendiriyoruz
+      working-directory: 'proje_kodlari'
       run: |
         python -m pip install --upgrade pip
         pip install pydivert psutil keyboard pyinstaller
 
-    - name: PyInstaller ile EXE'ye Dönüştür (Yönetici Yetkisi İstenecek Şekilde)
+    - name: PyInstaller ile EXE'ye Dönüştür
+      # Aynı şekilde derleme işlemini de bu klasörün içinde yapıyoruz
+      working-directory: 'proje_kodlari'
       run: |
         pyinstaller --noconsole --onefile --uac-admin main.py
 
@@ -32,5 +39,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Lag-Switch-Windows-Exe
-        path: dist/main.exe
+        # Çıkan .exe dosyasının yerini yeni klasör yapısına göre güncelledik
+        path: proje_kodlari/dist/main.exe
         
