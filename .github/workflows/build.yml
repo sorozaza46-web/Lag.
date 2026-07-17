@@ -13,24 +13,19 @@ jobs:
     steps:
     - name: Kodu Klonla
       uses: actions/checkout@v4
-      with:
-        # GitHub'ın noktalı klasör açmasını engellemek için hedef dizini elle düzeltiyoruz
-        repository: ${{ github.repository }}
-        path: 'lag_switch_proje'
 
     - name: Python Kurulumu
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
+        cache: 'pip' # Bağımlılıkları önbelleğe alarak sonraki çalışmalarda hızı artırır
 
     - name: Bağımlılıkları Yükle
-      working-directory: 'lag_switch_proje'
       run: |
         python -m pip install --upgrade pip
         pip install pydivert psutil keyboard pyinstaller
 
     - name: PyInstaller ile EXE'ye Dönüştür
-      working-directory: 'lag_switch_proje'
       run: |
         pyinstaller --noconsole --onefile --uac-admin main.py
 
@@ -38,5 +33,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Lag-Switch-Windows-Exe
-        path: lag_switch_proje/dist/main.exe
+        path: dist/main.exe
         
